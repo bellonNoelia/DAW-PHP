@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="estiloFormulario.css" />
+    <title>Formulario</title>
+</head>
+<body>
+    <form  action="validador.php" method="post">
+		
+		<fieldset class="formulario"> 
+			<br>
+			<legend class="datos">Datos Personales</legend>
+			<label class="datos">Nombre:</label>
+            <br>
+			<br>
+			<input type="text" id="nombre" name="nombre"  placeholder="Introduzca su nombre"required>
+			<br>
+			<br>
+			<label class="datos">Primer apellido:</label>
+            <br>
+			<br>
+			<input type="text" id="Apellido1"  name="Apellido1"  placeholder="Introduzca su primer apellido"required>
+			<br>
+			<br>
+            <label class="datos">Segundo apellido:</label>
+            <br>
+			<br>
+			<input type="text"  id="Apellido2"  name="Apellido2"  placeholder="Introduzca su segundo apellido"required>
+			<br>
+			<br>
+			<label class="datos">Edad:</label>
+            <br>
+			<br>
+			<input type="text" id="edad"  name="edad"  placeholder="Introduzca su edad" required> 
+			<br>
+			<br>
+            <label class="datos">Fecha de nacimiento: </label>
+            <br>
+			<br>
+			<input type="date"  id="fecha"  name="fecha" required> 
+			<br>
+			<br>
+            <label class="datos">DNI:</label>
+            <br>
+			<br>
+			<input type="text" id="dni"  name="dni"  placeholder="Introduzca su DNI" required> 
+			<br>
+			<br>
+			<br>
+			<div class="boton">
+            <input type="submit"  name="enviar" value="Enviar">
+			<input type="reset"  name="reset" value="Borrar" >
+			</div>
+        </fieldset>
+					
+		
+</body>
+</html>

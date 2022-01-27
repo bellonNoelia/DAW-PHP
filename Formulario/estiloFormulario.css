@@ -1,0 +1,21 @@
+body{
+    background-color: #ecf9fd;
+}
+.formulario{
+    margin: 0 auto;
+    height: 35em;
+    width: 25em;
+    border-radius: 0.5em;
+    background-color:   #d6f2ff   ;
+}
+.datos{
+    font-weight: bold;
+    color: #143b4d ;
+}
+.boton {
+    text-align: center;
+}
+.boton input{
+    width: 7em;
+    height: 4em;
+}
