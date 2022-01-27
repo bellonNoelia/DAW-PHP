@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="estiloAgenda.css" />
+    <title>Agenda</title>
+</head>
+<body>
+    <br>
+    
+    <form action="agenda.php" method="post">
+        
+
+        <fieldset class="anadir">
+                <legend class="datos">Añadir nuevo contacto.</legend>
+                <br>
+                <label>Nombre: </label>
+                <br>
+                <br>
+                <input type="text" name="nombre" placeholder="Introduce nombre" >
+                <br>
+                <br>
+                <label>Teléfono: </label>
+                <br>
+                <br>
+                <input type="text" name="telefono" placeholder="Introduce el teléfono" >
+                <br>
+                <br>
+                <input type="submit"  name="añadir" value="Añadir contacto">
+                <input type="reset"  name="reset" value="Borrar campos" >
+        </fieldset>
+
+        
+    </form>
+</body>
+</html>

@@ -1,0 +1,39 @@
+body{
+    background-color: #fff1fe;
+}
+h1{
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.5em;
+    
+}
+.agenda{
+    margin: auto;
+    height: auto;
+    width: 30em;
+    border-radius: 0.5em;
+    background-color:   #f0cdf0;
+}
+.anadir{
+    margin: auto;
+    height: 15em;
+    width: 30em;
+    border-radius: 0.5em;
+    background-color:   #eedaee;
+}
+
+.vaciarAgenda{
+    margin: auto;
+    height: 5em;
+    width: 30em;
+    border-radius: 0.5em;
+    background-color:   #f8ecf8;
+}
+.advertencia{
+    font-size: 1em;
+    text-align: center;
+    width: 16em;
+    height: 3em;
+    background:  #fd7676 ;
+    background: linear-gradient(90deg,  #fedede  0%,  #fca8a8  45%,  #fc6262  100%);    
+}
