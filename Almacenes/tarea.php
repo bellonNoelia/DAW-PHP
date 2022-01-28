@@ -1,6 +1,6 @@
 <?php
 //Creamos Conexión con MySQL
-$conexionBD= mysqli_connect('localhost','noe','a');
+$conexionBD= @mysqli_connect('localhost','noe','a');
 
 //Comprobamos la Conexión
 if(!$conexionBD){
@@ -10,7 +10,12 @@ if(!$conexionBD){
 }
 
 //Creamos la BBDD
-    $crearBD='CREATE DATABASE IF NOT EXISTS ALMACENES ';
+    if(mysqli_query($conexionBD,'DROP DATABASE ALMACENES')=== TRUE){
+        echo('Se ha borrado la base de datos ALMACENES correctamente.<br/>');
+    }else{
+        echo ('Error en ell borrado de la base de datos: '.mysqli_error($conexionBD).'<br/>');
+    }
+    $crearBD='CREATE DATABASE  ALMACENES ';
     if(mysqli_query($conexionBD,$crearBD)=== TRUE){
         echo('Se ha creado la base de datos ALMACENES correctamente.<br/>');
     }else{
@@ -76,18 +81,18 @@ VALUES ('LC01','CPU',999,0001),
 ('BL01','Clips',100,0002),
 ('BL02','Chinchetas',70,0002),
 ('BC01','Aspirador',799,0003),
-('BC01','Purificador de aire',800,0003),
-('LC01','Lapices',100,0004),
-('LC02','Gomas',100,0004),
-('LC03','Cartulinas',200,0004),
-('LC04','Folios',150,0004)";
+('BC02','Purificador de aire',800,0003),
+('C01','Lapices',100,0004),
+('C02','Gomas',100,0004),
+('C03','Cartulinas',200,0004),
+('C04','Folios',150,0004)";
 
 if(mysqli_query($conexionBD,$datos)){
     echo('Datos de almacenes insertados con éxito.');
 }else{
     echo('Error en la inserción de datos'.mysqli_error($conexionBD));
 }
-
+/*
 //Obtener los códigos de los almacenes que están saturados
 $consulta='SELECT A.codig
 FROM ALMACEN A
@@ -100,7 +105,7 @@ if(mysqli_query($conexionBD,$consulta)){
     echo $consulta;
 }else{
     echo('Error en la consulta almacenes saturados'.mysqli_error($conexionBD));
-}
+}*/
 //Cerrar conexión
 if (!@mysqli_close($conexionBD)) {
  echo('Error número ' . mysqli_errno($conexionBD) . ' al cerrar la conexión: ' . mysqli_error($conexionBD) . '.');
