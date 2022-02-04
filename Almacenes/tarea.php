@@ -4,28 +4,28 @@ $conexionBD= @mysqli_connect('localhost','noe','a');
 
 //Comprobamos la Conexión
 if(!$conexionBD){
-    echo('Error número '.mysqli_connect_errno().' al establecer la conexión: '.mysqli_connect_error().'<br/>');
+    echo("\n".'Error número '.mysqli_connect_errno().' al establecer la conexión: '.mysqli_connect_error());
 }else{
-    echo('Conexión establecida con éxito.<br/>');
+    echo("\n".'Conexión establecida con éxito.');
 }
 
 //Creamos la BBDD
     if(mysqli_query($conexionBD,'DROP DATABASE ALMACENES')=== TRUE){
-        echo('Se ha borrado la base de datos ALMACENES correctamente.<br/>');
+        echo("\n".'Se ha borrado la base de datos ALMACENES correctamente.');
     }else{
-        echo ('Error en ell borrado de la base de datos: '.mysqli_error($conexionBD).'<br/>');
+        echo ("\n".'Error en ell borrado de la base de datos: '.mysqli_error($conexionBD));
     }
     $crearBD='CREATE DATABASE  ALMACENES ';
     if(mysqli_query($conexionBD,$crearBD)=== TRUE){
-        echo('Se ha creado la base de datos ALMACENES correctamente.<br/>');
+        echo("\n".'Se ha creado la base de datos ALMACENES correctamente.');
     }else{
-        echo ('Error en la creación de la base de datos: '.mysqli_error($conexionBD).'<br/>');
+        echo ("\n".'Error en la creación de la base de datos: '.mysqli_error($conexionBD));
     }
 
     if(mysqli_query($conexionBD,'USE ALMACENES')=== TRUE){
-        echo('Se ha seleccionado la base de datos ALMACENES correctamente.<br/>');
+        echo("\n".'Se ha seleccionado la base de datos ALMACENES correctamente.');
     }else{
-        echo ('Error en la selección de la base de datos: '.mysqli_error($conexionBD).'<br/>');
+        echo ("\n".'Error en la selección de la base de datos: '.mysqli_error($conexionBD));
     }
 
 
@@ -48,15 +48,15 @@ $crearTablaCaja='CREATE TABLE IF NOT EXISTS CAJA (
     )';
 
 if(mysqli_query($conexionBD,$crearTablaAlm)){
-    echo('Tabla Almacén creada con éxito.');
+    echo("\n".'Tabla Almacén creada con éxito.');
 }else{
-    echo('Error en la creación de la tabla '.mysqli_error($conexionBD));
+    echo("\n".'Error en la creación de la tabla '.mysqli_error($conexionBD));
 }
 
 if(mysqli_query($conexionBD,$crearTablaCaja)){
-    echo('Tabla Caja creada con éxito.');
+    echo("\n".'Tabla Caja creada con éxito.');
 }else{
-    echo('Error en la creación de la tabla '.mysqli_error($conexionBD));
+    echo("\n".'Error en la creación de la tabla '.mysqli_error($conexionBD));
 }
 
 //Insertar datos
@@ -68,9 +68,9 @@ VALUES (0001,'Sabon',3),
 
 
 if(mysqli_query($conexionBD,$datos)){
-    echo('Datos de almacenes insertados con éxito.');
+    echo("\n".'Datos de almacenes insertados con éxito.');
 }else{
-    echo('Error en la inserción de datos'.mysqli_error($conexionBD));
+    echo("\n".'Error en la inserción de datos'.mysqli_error($conexionBD));
 }
 
 
@@ -88,27 +88,30 @@ VALUES ('LC01','CPU',999,0001),
 ('C04','Folios',150,0004)";
 
 if(mysqli_query($conexionBD,$datos)){
-    echo('Datos de almacenes insertados con éxito.');
+    echo("\n".'Datos de almacenes insertados con éxito.');
 }else{
-    echo('Error en la inserción de datos'.mysqli_error($conexionBD));
+    echo("\n".'Error en la inserción de datos'.mysqli_error($conexionBD));
 }
-/*
-//Obtener los códigos de los almacenes que están saturados
-$consulta='SELECT A.codig
-FROM ALMACEN A
-WHERE A.capacidad>(SELECT COUNT(C.NumReferencia)
-FROM CAJA C
-GROUP BY C.Almacen';
 
-if(mysqli_query($conexionBD,$consulta)){
-    echo('Consulta almacenes saturados realizada con éxito.');
-    echo $consulta;
+//Obtener los códigos de los almacenes que están saturados
+$consulta='SELECT codigo 
+FROM ALMACEN 
+WHERE capacidad<( SELECT COUNT(*) 
+FROM CAJA WHERE ALMACEN=codigo)';
+
+$res=mysqli_query($conexionBD,$consulta);
+if($res){
+    echo("\n".'Consulta almacenes saturados realizada con éxito.');
+    
+    while($codigo = mysqli_fetch_assoc($res)){
+        echo "\nAlmacenes saturados: "."Codigo: ".$codigo['codigo']."\n";
+    }
 }else{
-    echo('Error en la consulta almacenes saturados'.mysqli_error($conexionBD));
-}*/
+    echo("\n".'Error en la consulta almacenes saturados'.mysqli_error($conexionBD));
+}
 //Cerrar conexión
 if (!@mysqli_close($conexionBD)) {
- echo('Error número ' . mysqli_errno($conexionBD) . ' al cerrar la conexión: ' . mysqli_error($conexionBD) . '.');
+ echo("\n".'Error número ' . mysqli_errno($conexionBD) . ' al cerrar la conexión: ' . mysqli_error($conexionBD) . '.');
 }
 
 ?>
