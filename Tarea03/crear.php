@@ -1,10 +1,52 @@
 <?php
+
+if (isset($_POST['crear'])) {
+    $resultado = [
+      'error' => false,
+      'mensaje' => 'El  producto ' . $_POST['nombre'] . ' ha sido agregado con éxito' 
+    ];
 //Llamamos a la conexión.
 require_once("conexion.php"); 
+if(isset($_POST['crear'])){
+//Creamos variables de la información enviada
+$nombre=$_POST['nombre'];
+$nombreCorto=$_POST['nombreCorto'];
+$precio=$_POST['precio'];
+$familia=$_POST['familia'];
+$descripcion=$_POST['descripcion'];
 
+//Insercción de datos
+$insert="INSERT INTO productos(nombre,nombre_corto,descripcion,pvp,familia)
+VALUES(:nombre,:nombreCorto,:descripcion,:precio,:familia)";
+$stmt=$conexionProyecto->prepare($insert);
+try{
+    $stmt->execute([':nombre'=>$nombre,
+    ':nombreCorto'=>$nombreCorto,
+    ':descripcion'=>$descripcion,
+    ':precio'=>$precio,
+    ':familia'=>$familia]);
+}catch(PDOException $ex){
+    $resultado['error'] = true;
+    $resultado=$ex->getMessage();
+}
+if (isset($resultado)) {
+    ?>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-<?= $resultado['error'] ? 'danger' : 'success' ?>" role="alert">
+                <?= $resultado['mensaje'] ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+}}}
 
 ?>
+
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
@@ -33,30 +75,44 @@ require_once("conexion.php");
                 <div class="row">
                     <div class="col">
                         <label for="nombre">Nombre</label>
-                        <input type="text" class="form-control" placeholder="Nombre">
+                        <input id="nombre" name="nombre" type="text" class="form-control" placeholder="Nombre">
                     </div>
                     <div class="col">
                         <label for="nombreCorto">Nombre Corto</label>
-                        <input type="text" class="form-control" placeholder="Nombre Corto">
+                        <input id="nombreCorto" name="nombreCorto" type="text" class="form-control"
+                            placeholder="Nombre Corto">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <label for="precio">Precio (€)</label>
-                        <input type="text" class="form-control" placeholder="Precio (€)">
+                        <input id="precio" name="precio" type="text" class="form-control" placeholder="Precio (€)">
                     </div>
                     <div class="col">
                         <label for="familia">Familia</label>
-                        <select id="familia" class="form-control">
-                            <option selected>Choose...</option>
-                            <option>...</option>
+                        <select id="familia" name="familia" class="form-control">
+                            <option selected value="CAMARA">Cámaras digitales</option>
+                            <option value="CONSOL">Consolas</option>
+                            <option value="EBOOK">Libros electrónicos</option>
+                            <option value="IMPRES">Impresoras</option>
+                            <option value="MEMFLA">Memorias flash</option>
+                            <option value="MP3">Reproductores MP3</option>
+                            <option value="MULTIF">Equipos multifunción</option>
+                            <option value="NETBOK">Netbooks</option>
+                            <option value="ORDENA">Ordenadores</option>
+                            <option value="PORTAT">Ordenadores portátiles</option>
+                            <option value="ROUTER">Routers</option>
+                            <option value="SAI">Sistemas de alimentación initerrumpida</option>
+                            <option value="SOFTWA">Software </option>
+                            <option value="TV">Televisores</option>
+                            <option value="VIDEOC">Videocámaras</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="descripcion">Descripción</label>
-                        <textarea class="form-control" id="descripcion" rows="12"></textarea>
+                        <textarea class="form-control" name="descripcion" id="descripcion" rows="12"></textarea>
                     </div>
-                    <div>
+                    <div class="form-group">
                         <div class="row">
                             <div class="col">
 
@@ -66,8 +122,7 @@ require_once("conexion.php");
                                 <button type="submit" class="btn btn-success">Limpiar</button>
                             </div>
                             <div class="col">
-                                <button type="submit" class="btn btn-light"><a
-                                    href="listado.php">Volver</a></button>
+                                <button type="submit" class="btn btn-light"><a href="listado.php">Volver</a></button>
                             </div>
                         </div>
                     </div>
