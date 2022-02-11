@@ -1,51 +1,18 @@
 <?php
+//Llamamos al archivo de conexión.
+require_once('conexion.php');
+$conexionProyecto = new PDO($dsn, $user, $pass);
+//Creamos una variable que llame a la BBDD y hacemos el SELECT
+$sentencia = $conexionProyecto->query("SELECT * FROM productos");
+//Guardamos en la variable producto todos los valores de la BBDD.
+$producto = $sentencia->fetchAll(PDO::FETCH_OBJ);
+//print_r($producto);
 
-if (isset($_POST['crear'])) {
-    $resultado = false;
-    //Llamamos a la conexión.
-    require_once("conexion.php");
 
-    //Creamos variables de la información enviada
-    $nombre = $_POST['nombre'];
-    $nombreCorto = $_POST['nombreCorto'];
-    $precio = $_POST['precio'];
-    $familia = $_POST['familia'];
-    $descripcion = $_POST['descripcion'];
-
-    //Insercción de datos
-    $insert = "INSERT INTO productos(nombre,nombre_corto,descripcion,pvp,familia)
-VALUES(:nombre,:nombreCorto,:descripcion,:precio,:familia)";
-
-    $stmt = $conexionProyecto->prepare($insert);
-    try {
-        $stmt->execute([
-            ':nombre' => $nombre,
-            ':nombreCorto' => $nombreCorto,
-            ':descripcion' => $descripcion,
-            ':precio' => $precio,
-            ':familia' => $familia
-        ]);
-    } catch (PDOException $ex) {
-        $resultado = true;
-        $error = $ex->getMessage();
-    }
-}
-print_r($_POST);
-
-if (isset($resultado)) {
-
-    if ($resultado === false) {
-
-        echo "<div class='alert alert-success' role='alert' > Producto : $nombre  agregado correctamente.</div>";
-    } else {
-        echo "<div class='content alert alert-danger' role='alert'> No se pueden agregar datos. ERRO:$error </div>";
-    }
-}
 
 ?>
 
 <!DOCTYPE html>
-
 <html lang="es">
 
 <head>
@@ -63,68 +30,46 @@ if (isset($resultado)) {
 
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid" style="width:100%; height:100%">
         <div>
-            <h3 class="text-center">Crear Producto</h3>
+            <h3 class="text-center">Gestión de Productos</h3>
         </div>
 
         <div class="container mt-5">
-            <form method="POST" >
-                <div class="row">
-                    <div class="col">
-                        <label for="nombre">Nombre</label>
-                        <input id="nombre" name="nombre" type="text" class="form-control" placeholder="Nombre">
-                    </div>
-                    <div class="col">
-                        <label for="nombreCorto">Nombre Corto</label>
-                        <input id="nombreCorto" name="nombreCorto" type="text" class="form-control" placeholder="Nombre Corto">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <label for="precio">Precio (€)</label>
-                        <input id="precio" name="precio" type="text" class="form-control" placeholder="Precio (€)">
-                    </div>
-                    <div class="col">
-                        <label for="familia">Familia</label>
-                        <select id="familia" name="familia" class="form-control">
-                            <option selected value="CAMARA">Cámaras digitales</option>
-                            <option value="CONSOL">Consolas</option>
-                            <option value="EBOOK">Libros electrónicos</option>
-                            <option value="IMPRES">Impresoras</option>
-                            <option value="MEMFLA">Memorias flash</option>
-                            <option value="MP3">Reproductores MP3</option>
-                            <option value="MULTIF">Equipos multifunción</option>
-                            <option value="NETBOK">Netbooks</option>
-                            <option value="ORDENA">Ordenadores</option>
-                            <option value="PORTAT">Ordenadores portátiles</option>
-                            <option value="ROUTER">Routers</option>
-                            <option value="SAI">Sistemas de alimentación initerrumpida</option>
-                            <option value="SOFTWA">Software </option>
-                            <option value="TV">Televisores</option>
-                            <option value="VIDEOC">Videocámaras</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="descripcion">Descripción</label>
-                        <textarea class="form-control" name="descripcion" id="descripcion" rows="12"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col">
+            <button type="submit" class="btn btn-success"><a href="crear.php">Crear</a></button>
 
-                                <button type="submit"   name="crear" class="btn btn-primary">Crear</button>
-                            </div>
-                            <div class="col">
-                                <button type="reset" class="btn btn-success">Limpiar</button>
-                            </div>
-                            <div class="col">
-                                <button type="button" class="btn btn-light"><a href="listado.php">Volver</a></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>Detalle</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    //Recorremos el array 
+                    foreach ($producto as $dato) {
+                    ?>
+                        <tr>
+                            <td scope="row"><button type="button" class="btn btn-info"><a href="detalle.php?id=<?php echo $dato->id ?>">Detalle</a></button></td>
+                            <!--Lo referenciamos con el ID -->
+                            <td><?php echo $dato->id ?></td>
+                            <!--Nombre en  la BBDD-->
+                            <td><?php echo $dato->nombre ?></td>
+                            <td><button type="button" class="btn btn-warning"> <a href="update.php?id=<?php echo $dato->id ?>"> Actualizar</a></button>
+                                <button type="button" class="btn btn-danger"> <a href="borrar.php?id=<?php echo $dato->id ?>">Borrar</a></button>
+                            </td>
+                        </tr>
+
+                    <?php
+                        //Cerramos el foreach
+                    }
+                    ?>
+                </tbody>
+
+            </table>
         </div>
     </div>
 
