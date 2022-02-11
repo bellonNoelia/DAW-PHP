@@ -1,0 +1,13 @@
+.container-fluid{
+    background-color:  #76d1f3 ;
+    height: 100vh;
+    width: 100%;
+}
+.btn-success{ 
+    margin-bottom: 1em;  
+}
+a {
+    color: #ffffff;
+    appearance: button;
+    text-decoration: none;
+}
