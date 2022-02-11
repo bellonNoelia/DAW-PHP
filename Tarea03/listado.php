@@ -30,13 +30,10 @@ $producto=$sentencia->fetchAll(PDO::FETCH_OBJ);
 
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid"style="width:100%; height:100%">
         <div>
             <h3 class="text-center">Gestión de Productos</h3>
         </div>
-
-        
-
 
         <div class="container mt-5">
         <button type="submit" class="btn btn-success"><a href="crear.php">Crear</a></button>
@@ -57,15 +54,15 @@ $producto=$sentencia->fetchAll(PDO::FETCH_OBJ);
                     ?>
                     <tr>
                         <td scope="row"><button type="button" class="btn btn-info"><a
-                                    href="detalle.php?id=<?php echo $datos->id ?>">Detalle</a></button></td>
+                                    href="detalle.php?id=<?php echo $dato->id ?>">Detalle</a></button></td>
                         <!--Lo referenciamos con el ID -->
                         <td><?php echo $dato->id ?></td>
                         <!--Nombre en  la BBDD-->
                         <td><?php echo $dato->nombre ?></td>
                         <td><button type="button" class="btn btn-warning"> <a
-                                    href="update.php?id=<?php echo $datos->id ?>"> Actualizar</a></button>
+                                    href="update.php?id=<?php echo $dato->id ?>"> Actualizar</a></button>
                             <button type="button" class="btn btn-danger"> <a
-                                    href="borrar.php?id=<?php echo $datos->id ?>">Borrar</a></button>
+                                    href="borrar.php?id=<?php echo $dato->id ?>">Borrar</a></button>
                         </td>
                     </tr>
 
