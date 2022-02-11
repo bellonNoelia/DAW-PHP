@@ -6,7 +6,7 @@ if (isset($_GET['id'])) {
 
     if (isset($_POST['modificar'])) {
     try {
-        $alumno = [
+        $producto = [
             "id"        => $_GET['id'],
             "nombre"    => $_POST['nombre'],
             "nombreCorto "  => $_POST['nombreCorto '],
@@ -14,7 +14,7 @@ if (isset($_GET['id'])) {
             "precio"      => $_POST['precio']
         ];
 
-        $update= "UPDATE alumnos SET
+        $update= "UPDATE productos SET
     nombre = :nombre,
     nombreCorto = :nombreCorto,
     descripcion = :descripcion,
@@ -24,7 +24,7 @@ if (isset($_GET['id'])) {
     WHERE id = :id";
 
         $sentencia = $conexionProyecto->prepare($update);
-        $sentencia->execute($alumno);
+        $sentencia->execute($producto);
         $sentencia->execute();
     } catch (PDOException $error) {
         $resultado = true;
