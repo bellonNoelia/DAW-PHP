@@ -31,8 +31,8 @@ if (isset($_GET['modificar'])) {
             "pvp"      => $_GET['pvp'],
             "familia"     => $_GET['familia']
         ];
-
-        $update = "UPDATE productos SET
+        //Usamos la sentencia UPDATE para actualizar los valores del producto cuyo id se corresponda con el que estamos editando.
+       /* $update = "UPDATE productos SET
             nombre = :nombre,
             nombreCorto = :nombre_corto,
             descripcion = :descripcion,
@@ -40,8 +40,7 @@ if (isset($_GET['modificar'])) {
             familia = :familia,
             WHERE id = :id";
 
-        $sentencia = $conexionProyecto->prepare($update);
-       
+        $sentencia = $conexionProyecto->prepare($update);*/
     } catch (PDOException $error) {
         $resultado = true;
         $error = $error->getMessage();
@@ -97,26 +96,27 @@ if (isset($_GET['modificar'])) {
         <div>
             <h3 class="text-center">Modificar Producto</h3>
         </div>
-        <?php
-        //Recorremos el array 
-        foreach ($producto as $dato) {
-        ?>
-            <div class="container mt-5">
-                <form method="GET">
+
+        <div class="container mt-5">
+            <form method="GET">
+                <?php
+                //Recorremos el array 
+                foreach ($producto as $dato) {
+                ?>
                     <div class="row">
                         <div class="col">
                             <label for="nombre">Nombre</label>
-                            <input value="<? echo $dato->nombre ?>" id="nombre" name="nombre" type="text" class="form-control" placeholder="Nombre">
+                            <input value="<?php echo $dato->nombre ?>" id="nombre" name="nombre" type="text" class="form-control">
                         </div>
                         <div class="col">
                             <label for="nombreCorto">Nombre Corto</label>
-                            <input value="<? echo $dato->nombre_corto ?> " id="nombre_corto" name="nombreCorto" type="text" class="form-control" placeholder="Nombre Corto">
+                            <input value="<?php echo $dato->nombre_corto ?> " id="nombre_corto" name="nombreCorto" type="text" class="form-control">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
                             <label for="precio">Precio (€)</label>
-                            <input value="<? echo $dato->pvp ?>" id="pvp" name="precio" type="text" class="form-control" placeholder="Precio (€)">
+                            <input value="<?php echo $dato->pvp ?>" id="pvp" name="precio" type="text" class="form-control">
                         </div>
                         <div class="col">
                             <label for="familia">Familia</label>
@@ -134,8 +134,8 @@ if (isset($_GET['modificar'])) {
                             </select>
                         </div>
                         <div class="form-group">
-                            <label value="<? echo $dato->descripcion ?>" for="descripcion">Descripción</label>
-                            <textarea class="form-control" name="descripcion" id="descripcion" rows="12"></textarea>
+                            <label for="descripcion">Descripción</label>
+                            <textarea value="<?php echo $dato->descripcion ?>" class="form-control" name="descripcion" id="descripcion" rows="12"></textarea>
                         </div>
                         <div class="form-group">
                             <div class="row">
@@ -149,11 +149,12 @@ if (isset($_GET['modificar'])) {
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-        <?php
-        }
-        ?>
+                <?php
+                }
+                ?>
+            </form>
+        </div>
+
     </div>
 
 
