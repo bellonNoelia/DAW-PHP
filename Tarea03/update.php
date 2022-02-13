@@ -1,4 +1,4 @@
-<?php
+?php
 //Si no mandamos el id nos lleva a listado.php
 if (!isset($_GET['id'])) {
     header('Location:listado.php');
@@ -14,14 +14,14 @@ $stmt = $conexionProyecto->prepare($familia);
 $sentencia = $conexionProyecto->prepare($consulta);
 try {
     $stmt->execute();
-    $sentencia->execute([':i=>$id']);
+    $sentencia->execute([':i'=>$id]);
 } catch (PDOException $ex) {
     $resultado = true;
     $error = $ex->getMessage();
     echo "<div class='content alert alert-danger' role='alert'> Error al recuperar el producto o la familia. ERROR:$error </div>";
 }
-$producto = $sentencia->fetch(PDO::FETCH_OBJ);
-if (isset($_GET['modificar'])) {
+$producto = $sentencia->fetchALL(PDO::FETCH_OBJ);
+/*if (isset($_GET['modificar'])) {
     try {
         $producto = [
             "id"        => $_GET['id'],
@@ -32,7 +32,7 @@ if (isset($_GET['modificar'])) {
             "familia"     => $_GET['familia']
         ];
         //Usamos la sentencia UPDATE para actualizar los valores del producto cuyo id se corresponda con el que estamos editando.
-       /* $update = "UPDATE productos SET
+       $update = "UPDATE productos SET
             nombre = :nombre,
             nombreCorto = :nombre_corto,
             descripcion = :descripcion,
@@ -40,11 +40,11 @@ if (isset($_GET['modificar'])) {
             familia = :familia,
             WHERE id = :id";
 
-        $sentencia = $conexionProyecto->prepare($update);*/
+        $sentencia = $conexionProyecto->prepare($update);
     } catch (PDOException $error) {
         $resultado = true;
         $error = $error->getMessage();
-    }
+    
     try {
         $sentencia->execute([
             ':nombre' => $nombre,
@@ -69,8 +69,8 @@ if (isset($_GET['modificar'])) {
             echo "<div class='content alert alert-danger' role='alert'> No se ha encontrado el producto. ERRO:$error </div>";
         }
     }
-}
-
+}*/
+print_r($producto);
 
 ?>
 <!DOCTYPE html>
@@ -123,7 +123,7 @@ if (isset($_GET['modificar'])) {
                             <select id="familia" name="familia" class="form-control">
                                 <?php
                                 while ($filas = $stmt->fetch(PDO::FETCH_OBJ)) {
-                                    if ($filas->cod == $producto->familia) {
+                                    if ($filas->cod == $dato->familia) {
                                         echo "<option value='{$filas->cod}' selected>$filas->nombre</option>";
                                     } else {
                                         echo "<option value='{$filas->cod}'>$filas->nombre</option>";
@@ -135,7 +135,7 @@ if (isset($_GET['modificar'])) {
                         </div>
                         <div class="form-group">
                             <label for="descripcion">Descripción</label>
-                            <textarea value="<?php echo $dato->descripcion ?>" class="form-control" name="descripcion" id="descripcion" rows="12"></textarea>
+                            <textarea placeholder="<?php echo $dato->descripcion ?>" class="form-control" name="descripcion" id="descripcion" rows="12"></textarea>
                         </div>
                         <div class="form-group">
                             <div class="row">
