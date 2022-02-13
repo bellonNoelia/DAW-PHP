@@ -7,14 +7,74 @@ if (!isset($_GET['id'])) {
 //Llamamos a la conexión.
 require_once("conexion.php");
 $conexionProyecto = new PDO($dsn, $user, $pass);
+$familia = "SELECT cod,nombre FROM familias ORDER BY nombre";
+$consulta = "SELECT * FROM productos WHERE id=:i";
 $id = $_GET['id'];
-$sentencia = $conexionProyecto->query("SELECT * FROM productos  WHERE id=$id");
-//Guardamos en la variable producto todos los valores de la BBDD.
-$producto = $sentencia->fetchAll(PDO::FETCH_OBJ);
-//print_r($producto);
+$stmt = $conexionProyecto->prepare($familia);
+$sentencia = $conexionProyecto->prepare($consulta);
+try {
+    $stmt->execute();
+    $sentencia->execute([':i=>$id']);
+} catch (PDOException $ex) {
+    $resultado = true;
+    $error = $ex->getMessage();
+    echo "<div class='content alert alert-danger' role='alert'> Error al recuperar el producto o la familia. ERROR:$error </div>";
+}
+$producto = $sentencia->fetch(PDO::FETCH_OBJ);
+if (isset($_GET['modificar'])) {
+    try {
+        $producto = [
+            "id"        => $_GET['id'],
+            "nombre"    => $_GET['nombre'],
+            "nombre_corto "  => $_GET['nombre_corto'],
+            "descripcion"     => $_GET['descripcion'],
+            "pvp"      => $_GET['pvp'],
+            "familia"     => $_GET['familia']
+        ];
+        //Usamos la sentencia UPDATE para actualizar los valores del producto cuyo id se corresponda con el que estamos editando.
+       /* $update = "UPDATE productos SET
+            nombre = :nombre,
+            nombreCorto = :nombre_corto,
+            descripcion = :descripcion,
+            precio = :pvp,
+            familia = :familia,
+            WHERE id = :id";
+
+        $sentencia = $conexionProyecto->prepare($update);*/
+    } catch (PDOException $error) {
+        $resultado = true;
+        $error = $error->getMessage();
+    }
+    try {
+        $sentencia->execute([
+            ':nombre' => $nombre,
+            ':nombre_corto' => $nombre_corto,
+            ':descripcion' => $descripcion,
+            ':pvp' => $pvp,
+            ':familia' => $familia
+        ]);
+    } catch (PDOException $error) {
+        $resultado = true;
+        $error = $error->getMessage();
+    }
+
+
+
+    if (isset($resultado)) {
+
+        if ($resultado === false) {
+
+            echo "<div class='alert alert-success' role='alert' > Producto : $nombre  actualizado correctamente.</div>";
+        } else {
+            echo "<div class='content alert alert-danger' role='alert'> No se ha encontrado el producto. ERRO:$error </div>";
+        }
+    }
+}
+
 
 ?>
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
@@ -24,8 +84,7 @@ $producto = $sentencia->fetchAll(PDO::FETCH_OBJ);
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS v5.0.2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="estilos.css">
 
 
@@ -33,48 +92,77 @@ $producto = $sentencia->fetchAll(PDO::FETCH_OBJ);
 
 
 <body>
-    <div class="container-fluid" style="width:100%; height:100%">
+    <div class="container-fluid">
         <div>
-            <h3 class="text-center">Detalle de producto</h3>
+            <h3 class="text-center">Modificar Producto</h3>
         </div>
-        <?php
-        //Recorremos el array 
-        foreach ($producto as $dato) {
-        ?>
+
         <div class="container mt-5">
-            <div class="nombre">
-                <p> <?php echo $dato->nombre ?></p>
-            </div>
-            <div>
-                <p class="codigo">Código: <?php echo $dato->cod ?></p>
-                <div>
+            <form method="GET">
+                <?php
+                //Recorremos el array 
+                foreach ($producto as $dato) {
+                ?>
+                    <div class="row">
+                        <div class="col">
+                            <label for="nombre">Nombre</label>
+                            <input value="<?php echo $dato->nombre ?>" id="nombre" name="nombre" type="text" class="form-control">
+                        </div>
+                        <div class="col">
+                            <label for="nombreCorto">Nombre Corto</label>
+                            <input value="<?php echo $dato->nombre_corto ?> " id="nombre_corto" name="nombreCorto" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="precio">Precio (€)</label>
+                            <input value="<?php echo $dato->pvp ?>" id="pvp" name="precio" type="text" class="form-control">
+                        </div>
+                        <div class="col">
+                            <label for="familia">Familia</label>
+                            <select id="familia" name="familia" class="form-control">
+                                <?php
+                                while ($filas = $stmt->fetch(PDO::FETCH_OBJ)) {
+                                    if ($filas->cod == $producto->familia) {
+                                        echo "<option value='{$filas->cod}' selected>$filas->nombre</option>";
+                                    } else {
+                                        echo "<option value='{$filas->cod}'>$filas->nombre</option>";
+                                    }
+                                }
+                                ?>
 
-                    <p>Nombre: <?php echo $dato->nombre ?></p>
-                    <p>Nombre corto: <?php echo $dato->nombre_corto ?></p>
-                    <p>Precio: <?php echo $dato->pvp ?></p>
-                    <p>Familia: <?php echo $dato->familia ?></p>
-                    <p>Descripción: <?php echo $dato->descripcion ?></p>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="descripcion">Descripción</label>
+                            <textarea value="<?php echo $dato->descripcion ?>" class="form-control" name="descripcion" id="descripcion" rows="12"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
 
-                </div>
-            </div>
-
+                                    <button type="submit" name="modificar" class="btn btn-primary">Modificar</button>
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php
+                }
+                ?>
+            </form>
         </div>
-    </div>
-    <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
-    <?php
-            //Cerramos el foreach
-        }
-        ?>
+
     </div>
 
 
 
     <!-- Bootstrap JavaScript Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
     </script>
 </body>
 
