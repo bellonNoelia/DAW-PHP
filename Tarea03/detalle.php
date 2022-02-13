@@ -33,40 +33,44 @@ $producto = $sentencia->fetchAll(PDO::FETCH_OBJ);
 
 
 <body>
-    <div class="container-fluid" style="width:100%; height:100%">
+    <div class="container-fluid">
         <div>
             <h3 class="text-center">Detalle de producto</h3>
         </div>
-        <?php
-        //Recorremos el array 
-        foreach ($producto as $dato) {
-        ?>
-        <div class="container mt-5">
-            <div class="nombre">
-                <p> <?php echo $dato->nombre ?></p>
-            </div>
-            <div>
-                <p class="codigo">Código: <?php echo $dato->cod ?></p>
-                <div>
-
-                    <p>Nombre: <?php echo $dato->nombre ?></p>
-                    <p>Nombre corto: <?php echo $dato->nombre_corto ?></p>
-                    <p>Precio: <?php echo $dato->pvp ?></p>
-                    <p>Familia: <?php echo $dato->familia ?></p>
-                    <p>Descripción: <?php echo $dato->descripcion ?></p>
-
+        <form method="GET">
+            <?php
+            //Recorremos el array 
+            foreach ($producto as $dato) {
+            ?>
+            <div class="container mt-5">
+                <div class="container mt-2 bg_info_t1 text-white" style="background-color:#1c8caa;">
+                    <div class="text-center"> <?php echo $dato->nombre ?></div>
                 </div>
+                <div id="container" class="container mt-2 bg-info_t2  text-white" style="background-color:#20a8cd;">
+
+                    </br>
+                    <h6 class="text-center">Código: <?php echo $dato->id ?></h6>
+                    <p class="text-left">Nombre: <?php echo $dato->nombre ?></p>
+                    <p class="text-left">Nombre corto: <?php echo $dato->nombre_corto ?></p>
+                    <p class="text-left">Precio: <?php echo $dato->pvp ?></p>
+                    <p class="text-left">Familia: <?php echo $dato->familia ?></p>
+                    <p class="text-left">Descripción: <?php echo $dato->descripcion ?></p>
+                    </br>
+                </div>
+
+
+
             </div>
 
-        </div>
+            <?php
+                //Cerramos el foreach
+            }
+            ?>
+            <div class="text-center" style="margin-top: 1em">
+                <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
+            </div>
+        </form>
     </div>
-    <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
-    <?php
-            //Cerramos el foreach
-        }
-        ?>
-    </div>
-
 
 
     <!-- Bootstrap JavaScript Libraries -->
