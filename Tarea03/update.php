@@ -1,4 +1,4 @@
-?php
+<?php
 //Si no mandamos el id nos lleva a listado.php
 if (!isset($_GET['id'])) {
     header('Location:listado.php');
@@ -21,7 +21,7 @@ try {
     echo "<div class='content alert alert-danger' role='alert'> Error al recuperar el producto o la familia. ERROR:$error </div>";
 }
 $producto = $sentencia->fetchALL(PDO::FETCH_OBJ);
-/*if (isset($_GET['modificar'])) {
+if (isset($_GET['modificar'])) {
     try {
         $producto = [
             "id"        => $_GET['id'],
@@ -40,19 +40,15 @@ $producto = $sentencia->fetchALL(PDO::FETCH_OBJ);
             familia = :familia,
             WHERE id = :id";
 
-        $sentencia = $conexionProyecto->prepare($update);
-    } catch (PDOException $error) {
-        $resultado = true;
-        $error = $error->getMessage();
-    
-    try {
-        $sentencia->execute([
+        $sentencia2 = $conexionProyecto->prepare($update);
+         $sentencia2->execute([
             ':nombre' => $nombre,
             ':nombre_corto' => $nombre_corto,
             ':descripcion' => $descripcion,
             ':pvp' => $pvp,
             ':familia' => $familia
         ]);
+         
     } catch (PDOException $error) {
         $resultado = true;
         $error = $error->getMessage();
@@ -69,8 +65,7 @@ $producto = $sentencia->fetchALL(PDO::FETCH_OBJ);
             echo "<div class='content alert alert-danger' role='alert'> No se ha encontrado el producto. ERRO:$error </div>";
         }
     }
-}*/
-print_r($producto);
+}
 
 ?>
 <!DOCTYPE html>
@@ -84,7 +79,8 @@ print_r($producto);
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS v5.0.2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="estilos.css">
 
 
@@ -103,25 +99,27 @@ print_r($producto);
                 //Recorremos el array 
                 foreach ($producto as $dato) {
                 ?>
-                    <div class="row">
-                        <div class="col">
-                            <label for="nombre">Nombre</label>
-                            <input value="<?php echo $dato->nombre ?>" id="nombre" name="nombre" type="text" class="form-control">
-                        </div>
-                        <div class="col">
-                            <label for="nombreCorto">Nombre Corto</label>
-                            <input value="<?php echo $dato->nombre_corto ?> " id="nombre_corto" name="nombreCorto" type="text" class="form-control">
-                        </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="nombre">Nombre</label>
+                        <input value="<?php echo $dato->nombre ?>" id="nombre" name="nombre" type="text"
+                            class="form-control">
                     </div>
-                    <div class="row">
-                        <div class="col">
-                            <label for="precio">Precio (€)</label>
-                            <input value="<?php echo $dato->pvp ?>" id="pvp" name="precio" type="text" class="form-control">
-                        </div>
-                        <div class="col">
-                            <label for="familia">Familia</label>
-                            <select id="familia" name="familia" class="form-control">
-                                <?php
+                    <div class="col">
+                        <label for="nombreCorto">Nombre Corto</label>
+                        <input value="<?php echo $dato->nombre_corto ?> " id="nombre_corto" name="nombreCorto"
+                            type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="precio">Precio (€)</label>
+                        <input value="<?php echo $dato->pvp ?>" id="pvp" name="precio" type="text" class="form-control">
+                    </div>
+                    <div class="col">
+                        <label for="familia">Familia</label>
+                        <select id="familia" name="familia" class="form-control">
+                            <?php
                                 while ($filas = $stmt->fetch(PDO::FETCH_OBJ)) {
                                     if ($filas->cod == $dato->familia) {
                                         echo "<option value='{$filas->cod}' selected>$filas->nombre</option>";
@@ -131,24 +129,22 @@ print_r($producto);
                                 }
                                 ?>
 
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="descripcion">Descripción</label>
-                            <textarea placeholder="<?php echo $dato->descripcion ?>" class="form-control" name="descripcion" id="descripcion" rows="12"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col">
-
-                                    <button type="submit" name="modificar" class="btn btn-primary">Modificar</button>
-                                </div>
-                                <div class="col">
-                                    <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
-                                </div>
-                            </div>
-                        </div>
+                        </select>
                     </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea placeholder="<?php echo $dato->descripcion ?>" class="form-control" name="descripcion"
+                            id="descripcion" rows="12"></textarea>
+                    </div>
+                    <div style="margin-top: 1em">
+
+
+                        <button type="submit" name="modificar" class="btn btn-primary">Modificar</button>
+
+                        <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
+
+                    </div>
+                </div>
                 <?php
                 }
                 ?>
@@ -160,10 +156,10 @@ print_r($producto);
 
 
     <!-- Bootstrap JavaScript Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
     </script>
 </body>
-
-</html>
