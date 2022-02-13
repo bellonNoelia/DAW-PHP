@@ -26,9 +26,9 @@ if (isset($_GET['modificar'])) {
         $producto = [
             "id"        => $_GET['id'],
             "nombre"    => $_GET['nombre'],
-            "nombreCorto "  => $_GET['nombre_corto'],
+            "nombre_corto "  => $_GET['nombre_corto'],
             "descripcion"     => $_GET['descripcion'],
-            "precio"      => $_GET['pvp'],
+            "pvp"      => $_GET['pvp'],
             "familia"     => $_GET['familia']
         ];
 
@@ -41,6 +41,7 @@ if (isset($_GET['modificar'])) {
             WHERE id = :id";
 
         $sentencia = $conexionProyecto->prepare($update);
+       
     } catch (PDOException $error) {
         $resultado = true;
         $error = $error->getMessage();
@@ -48,9 +49,9 @@ if (isset($_GET['modificar'])) {
     try {
         $sentencia->execute([
             ':nombre' => $nombre,
-            ':nombre_corto' => $nombreCorto,
+            ':nombre_corto' => $nombre_corto,
             ':descripcion' => $descripcion,
-            ':pvp' => $precio,
+            ':pvp' => $pvp,
             ':familia' => $familia
         ]);
     } catch (PDOException $error) {
@@ -70,9 +71,6 @@ if (isset($_GET['modificar'])) {
         }
     }
 }
-
-
-
 
 
 ?>
@@ -112,13 +110,13 @@ if (isset($_GET['modificar'])) {
                         </div>
                         <div class="col">
                             <label for="nombreCorto">Nombre Corto</label>
-                            <input value="<? echo $dato->nombre_corto ?> " id="nombreCorto" name="nombreCorto" type="text" class="form-control" placeholder="Nombre Corto">
+                            <input value="<? echo $dato->nombre_corto ?> " id="nombre_corto" name="nombreCorto" type="text" class="form-control" placeholder="Nombre Corto">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
                             <label for="precio">Precio (€)</label>
-                            <input value="<? echo $dato->pvp ?>" id="precio" name="precio" type="text" class="form-control" placeholder="Precio (€)">
+                            <input value="<? echo $dato->pvp ?>" id="pvp" name="precio" type="text" class="form-control" placeholder="Precio (€)">
                         </div>
                         <div class="col">
                             <label for="familia">Familia</label>
