@@ -3,70 +3,53 @@
 if (!isset($_GET['id'])) {
     header('Location:listado.php');
 }
-
+$resultado=true;
 //Llamamos a la conexión.
 require_once("conexion.php");
 $conexionProyecto = new PDO($dsn, $user, $pass);
 $familia = "SELECT cod,nombre FROM familias ORDER BY nombre";
-$consulta = "SELECT * FROM productos WHERE id=:i";
+$consulta = "SELECT * FROM productos WHERE id=?";
 $id = $_GET['id'];
 $stmt = $conexionProyecto->prepare($familia);
 $sentencia = $conexionProyecto->prepare($consulta);
 try {
     $stmt->execute();
-    $sentencia->execute([':i'=>$id]);
+    $sentencia->execute([$id]);
 } catch (PDOException $ex) {
-    $resultado = true;
     $error = $ex->getMessage();
     echo "<div class='content alert alert-danger' role='alert'> Error al recuperar el producto o la familia. ERROR:$error </div>";
 }
 $producto = $sentencia->fetchALL(PDO::FETCH_OBJ);
-if (isset($_GET['modificar'])) {
+if (isset($_POST['modificar'])) {
+    $codigo = ($_POST['codigo']);
+    $nombre=($_POST['nombre']);
+    $nombre_corto=($_POST['nombre_corto']);
+    $pvp = ($_POST['pvp']);
+    $familia =($_POST['familia']);
+    $descripcion = ($_POST['descripcion']);
+
+    $update = "UPDATE productos SET
+    nombre = ?,
+    nombre_corto = ?,
+    descripcion = ?,
+    pvp = ?,
+    familia = ?,
+    WHERE id' = ?";
     try {
-        $producto = [
-            "id"        => $_GET['id'],
-            "nombre"    => $_GET['nombre'],
-            "nombre_corto "  => $_GET['nombre_corto'],
-            "descripcion"     => $_GET['descripcion'],
-            "pvp"      => $_GET['pvp'],
-            "familia"     => $_GET['familia']
-        ];
-        //Usamos la sentencia UPDATE para actualizar los valores del producto cuyo id se corresponda con el que estamos editando.
-       $update = "UPDATE productos SET
-            nombre = :nombre,
-            nombreCorto = :nombre_corto,
-            descripcion = :descripcion,
-            precio = :pvp,
-            familia = :familia,
-            WHERE id = :id";
 
-        $sentencia2 = $conexionProyecto->prepare($update);
-         $sentencia2->execute([
-            ':nombre' => $nombre,
-            ':nombre_corto' => $nombre_corto,
-            ':descripcion' => $descripcion,
-            ':pvp' => $pvp,
-            ':familia' => $familia
-        ]);
-         
-    } catch (PDOException $error) {
-        $resultado = true;
-        $error = $error->getMessage();
+        $cons = $conexionProyecto->prepare($update);
+        $cons2 = $cons->execute($nombre, $nombre_corto, $descripcion, $pvp, $familia,$codigo);
+    } catch (PDOException $ex) {
+        $resultado = false;
+        $error = $ex->getMessage();
     }
-
-
-
-    if (isset($resultado)) {
-
-        if ($resultado === false) {
-
-            echo "<div class='alert alert-success' role='alert' > Producto : $nombre  actualizado correctamente.</div>";
-        } else {
-            echo "<div class='content alert alert-danger' role='alert'> No se ha encontrado el producto. ERRO:$error </div>";
-        }
+    if ($resultado) {
+        echo "<div class='alert alert-success' role='alert' > Producto : $nombre  actualizado correctamente.</div>";
+    } else {
+        echo "<div class='content alert alert-danger' role='alert'> No se ha encontrado el producto. ERROR:$error </div>";
     }
 }
-
+print_r($producto);
 ?>
 <!DOCTYPE html>
 
@@ -94,7 +77,7 @@ if (isset($_GET['modificar'])) {
         </div>
 
         <div class="container mt-5">
-            <form method="GET">
+            <form method="POST">
                 <?php
                 //Recorremos el array 
                 foreach ($producto as $dato) {
@@ -102,19 +85,20 @@ if (isset($_GET['modificar'])) {
                 <div class="row">
                     <div class="col">
                         <label for="nombre">Nombre</label>
-                        <input value="<?php echo $dato->nombre ?>" id="nombre" name="nombre" type="text"
-                            class="form-control">
+                        <input value="<?php echo $dato->nombre ?>" placeholder="Nombre" id="nombre" name="nombre"
+                            type="text" class="form-control">
                     </div>
                     <div class="col">
                         <label for="nombreCorto">Nombre Corto</label>
-                        <input value="<?php echo $dato->nombre_corto ?> " id="nombre_corto" name="nombreCorto"
-                            type="text" class="form-control">
+                        <input value="<?php echo $dato->nombre_corto ?> " placeholder="Nombre corto" id="nombre_corto"
+                            name="nombre_corto" type="text" class="form-control">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <label for="precio">Precio (€)</label>
-                        <input value="<?php echo $dato->pvp ?>" id="pvp" name="precio" type="text" class="form-control">
+                        <input value="<?php echo $dato->pvp ?>" placeholder="Precio" id="pvp" name="pvp" type="text"
+                            class="form-control">
                     </div>
                     <div class="col">
                         <label for="familia">Familia</label>
@@ -138,7 +122,7 @@ if (isset($_GET['modificar'])) {
                     </div>
                     <div style="margin-top: 1em">
 
-
+                        <input type="hidden" name="codigo" value="<?php echo $dato->pvp ?>">
                         <button type="submit" name="modificar" class="btn btn-primary">Modificar</button>
 
                         <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
@@ -163,3 +147,5 @@ if (isset($_GET['modificar'])) {
         integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
     </script>
 </body>
+
+</html>
