@@ -22,13 +22,11 @@ try {
 }
 $producto = $sentencia->fetchALL(PDO::FETCH_OBJ);
 if (isset($_POST['modificar'])) {
-    $conexionProyecto = new PDO($dsn, $user, $pass);
     $nombre=($_POST['nombre']);
     $nombreCorto=($_POST['nombreCorto']);
     $precio = ($_POST['precio']);
     $familia =($_POST['familia']);
     $descripcion = ($_POST['descripcion']);
-    $id = $_GET['id'];
 
     $sql = "UPDATE productos SET
     nombre = '$nombre',
@@ -39,8 +37,8 @@ if (isset($_POST['modificar'])) {
     WHERE id = '$id'";
     try {
 
-        $sentencia2= $conexionProyecto->prepare($sql);
-        $sentencia2->execute();
+        $producto= $conexionProyecto->prepare($sql);
+        $producto->execute();
     } catch (PDOException $ex) {
         $resultado = false;
         $error = $ex->getMessage();
