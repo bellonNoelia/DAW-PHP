@@ -7,38 +7,40 @@ $resultado=true;
 //Llamamos a la conexión.
 require_once("conexion.php");
 $conexionProyecto = new PDO($dsn, $user, $pass);
-$familia = "SELECT cod,nombre FROM familias ORDER BY nombre";
-$consulta = "SELECT * FROM productos WHERE id=?";
 $id = $_GET['id'];
+$familia = "SELECT cod,nombre FROM familias ORDER BY nombre";
+$consulta = "SELECT * FROM productos WHERE id=$id";
+
 $stmt = $conexionProyecto->prepare($familia);
 $sentencia = $conexionProyecto->prepare($consulta);
 try {
     $stmt->execute();
-    $sentencia->execute([$id]);
+    $sentencia->execute();
 } catch (PDOException $ex) {
     $error = $ex->getMessage();
     echo "<div class='content alert alert-danger' role='alert'> Error al recuperar el producto o la familia. ERROR:$error </div>";
 }
 $producto = $sentencia->fetchALL(PDO::FETCH_OBJ);
 if (isset($_POST['modificar'])) {
-    $codigo = ($_POST['codigo']);
+    $conexionProyecto = new PDO($dsn, $user, $pass);
     $nombre=($_POST['nombre']);
-    $nombre_corto=($_POST['nombre_corto']);
-    $pvp = ($_POST['pvp']);
+    $nombreCorto=($_POST['nombreCorto']);
+    $precio = ($_POST['precio']);
     $familia =($_POST['familia']);
     $descripcion = ($_POST['descripcion']);
+    $id = $_GET['id'];
 
-    $update = "UPDATE productos SET
-    nombre = ?,
-    nombre_corto = ?,
-    descripcion = ?,
-    pvp = ?,
-    familia = ?,
-    WHERE id' = ?";
+    $sql = "UPDATE productos SET
+    nombre = '$nombre',
+    nombre_corto = '$nombreCorto',
+    descripcion = '$descripcion',
+    pvp = '$precio'
+    familia = '$familia',
+    WHERE id = '$id'";
     try {
 
-        $cons = $conexionProyecto->prepare($update);
-        $cons2 = $cons->execute($nombre, $nombre_corto, $descripcion, $pvp, $familia,$codigo);
+        $sentencia2= $conexionProyecto->prepare($sql);
+        $sentencia2->execute();
     } catch (PDOException $ex) {
         $resultado = false;
         $error = $ex->getMessage();
@@ -77,7 +79,8 @@ print_r($producto);
         </div>
 
         <div class="container mt-5">
-            <form method="POST">
+            <form method="POST" action="prueba.php">
+                <!-- action="<?php //echo $_SERVER['PHP_SELF']; ?>"-->
                 <?php
                 //Recorremos el array 
                 foreach ($producto as $dato) {
@@ -91,13 +94,13 @@ print_r($producto);
                     <div class="col">
                         <label for="nombreCorto">Nombre Corto</label>
                         <input value="<?php echo $dato->nombre_corto ?> " placeholder="Nombre corto" id="nombre_corto"
-                            name="nombre_corto" type="text" class="form-control">
+                            name="nombreCorto" type="text" class="form-control">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <label for="precio">Precio (€)</label>
-                        <input value="<?php echo $dato->pvp ?>" placeholder="Precio" id="pvp" name="pvp" type="text"
+                        <input value="<?php echo $dato->pvp ?>" placeholder="Precio" id="precio" name="pvp" type="text"
                             class="form-control">
                     </div>
                     <div class="col">
@@ -122,7 +125,7 @@ print_r($producto);
                     </div>
                     <div style="margin-top: 1em">
 
-                        <input type="hidden" name="codigo" value="<?php echo $dato->pvp ?>">
+                        
                         <button type="submit" name="modificar" class="btn btn-primary">Modificar</button>
 
                         <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
