@@ -3,7 +3,7 @@
 if (!isset($_GET['id'])) {
     header('Location:listado.php');
 }
-$resultado=true;
+$resultado = true;
 //Llamamos a la conexión.
 require_once("conexion.php");
 $conexionProyecto = new PDO($dsn, $user, $pass);
@@ -12,33 +12,41 @@ $familia = "SELECT cod,nombre FROM familias ORDER BY nombre";
 $consulta = "SELECT * FROM productos WHERE id=$id";
 
 $stmt = $conexionProyecto->prepare($familia);
-$sentencia = $conexionProyecto->prepare($consulta);
+$stmt2 = $conexionProyecto->prepare($consulta);
 try {
     $stmt->execute();
-    $sentencia->execute();
+    $stmt2->execute();
 } catch (PDOException $ex) {
     $error = $ex->getMessage();
     echo "<div class='content alert alert-danger' role='alert'> Error al recuperar el producto o la familia. ERROR:$error </div>";
 }
-$producto = $sentencia->fetchALL(PDO::FETCH_OBJ);
+$producto = $stmt2->fetchALL(PDO::FETCH_OBJ);
 if (isset($_POST['modificar'])) {
-    $nombre=($_POST['nombre']);
-    $nombreCorto=($_POST['nombreCorto']);
+    $nombre = ($_POST['nombre']);
+    $nombreCorto = ($_POST['nombreCorto']);
     $precio = ($_POST['precio']);
-    $familia =($_POST['familia']);
+    $familia = ($_POST['familia']);
     $descripcion = ($_POST['descripcion']);
+    $id = $_GET['id'];
 
     $sql = "UPDATE productos SET
-    nombre = '$nombre',
-    nombre_corto = '$nombreCorto',
-    descripcion = '$descripcion',
-    pvp = '$precio'
-    familia = '$familia',
-    WHERE id = '$id'";
-    try {
+    nombre = :nombre,
+    nombre_corto = :nombreCorto,
+    descripcion = :descripcion,
+    pvp = :precio,
+    familia = :familia,
+    WHERE id = :id";
 
-        $producto= $conexionProyecto->prepare($sql);
-        $producto->execute();
+    $stmt3 = $conexionProyecto->prepare($sql);
+    try {
+        $stmt3->execute([
+            ':nombre' => $nombre,
+            ':nombreCorto' => $nombreCorto,
+            ':descripcion' => $descripcion,
+            ':precio' => $precio,
+            ':familia' => $familia,
+            ':id' => $id
+        ]);
     } catch (PDOException $ex) {
         $resultado = false;
         $error = $ex->getMessage();
@@ -49,7 +57,8 @@ if (isset($_POST['modificar'])) {
         echo "<div class='content alert alert-danger' role='alert'> No se ha encontrado el producto. ERROR:$error </div>";
     }
 }
-print_r($producto);
+print_r($producto);print_r($p);
+
 ?>
 <!DOCTYPE html>
 
