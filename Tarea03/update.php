@@ -8,8 +8,8 @@ $resultado = true;
 require_once("conexion.php");
 $conexionProyecto = new PDO($dsn, $user, $pass);
 $id = $_GET['id'];
-$familia = "SELECT cod,nombre FROM familias ORDER BY nombre";
-$consulta = "SELECT * FROM productos WHERE id=$id";
+$familia ="SELECT cod,nombre FROM familias ORDER BY nombre";
+$consulta ="SELECT * FROM productos WHERE id=$id";
 
 $stmt = $conexionProyecto->prepare($familia);
 $stmt2 = $conexionProyecto->prepare($consulta);
@@ -27,15 +27,15 @@ if (isset($_POST['modificar'])) {
     $precio = ($_POST['precio']);
     $familia = ($_POST['familia']);
     $descripcion = ($_POST['descripcion']);
-    $id = $_GET['id'];
+    $cod = $_POST['codigo'];
 
-    $sql = "UPDATE productos SET
+    $sql ="UPDATE productos SET
     nombre = :nombre,
     nombre_corto = :nombreCorto,
     descripcion = :descripcion,
     pvp = :precio,
     familia = :familia,
-    WHERE id = :id";
+    WHERE id = :codigo";
 
     $stmt3 = $conexionProyecto->prepare($sql);
     try {
@@ -45,8 +45,10 @@ if (isset($_POST['modificar'])) {
             ':descripcion' => $descripcion,
             ':precio' => $precio,
             ':familia' => $familia,
-            ':id' => $id
+            ':codigo'=> $cod
         ]);
+
+
     } catch (PDOException $ex) {
         $resultado = false;
         $error = $ex->getMessage();
@@ -132,7 +134,7 @@ print_r($producto);print_r($p);
                     </div>
                     <div style="margin-top: 1em">
 
-                        
+                        <input type="hidden" name="codigo" value="<?php echo $dato->id ?>">
                         <button type="submit" name="modificar" class="btn btn-primary">Modificar</button>
 
                         <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
