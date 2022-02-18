@@ -1,65 +1,67 @@
 <?php
-//Si no mandamos el id nos lleva a listado.php
-if (!isset($_GET['id'])) {
-    header('Location:listado.php');
-}
-$resultado = true;
 //Llamamos a la conexión.
-require_once("conexion.php");
-$conexionProyecto = new PDO($dsn, $user, $pass);
-$id = $_GET['id'];
-$familia ="SELECT cod,nombre FROM familias ORDER BY nombre";
-$consulta ="SELECT * FROM productos WHERE id=$id";
-
-$stmt = $conexionProyecto->prepare($familia);
-$stmt2 = $conexionProyecto->prepare($consulta);
-try {
-    $stmt->execute();
-    $stmt2->execute();
-} catch (PDOException $ex) {
-    $error = $ex->getMessage();
-    echo "<div class='content alert alert-danger' role='alert'> Error al recuperar el producto o la familia. ERROR:$error </div>";
-}
-$producto = $stmt2->fetchALL(PDO::FETCH_OBJ);
+require_once 'conexion.php';
+$conexionProyecto = new PDO($dsn,$user,$pass);
+//Creamos una variable resultado para utilizar flags y según su resultado le asociaremos unas acciones u otras.
+$resultado=true;
+//Si clicamos en moficar se ejecuta el código dentro del if.
 if (isset($_POST['modificar'])) {
-    $nombre = ($_POST['nombre']);
-    $nombreCorto = ($_POST['nombreCorto']);
-    $precio = ($_POST['precio']);
-    $familia = ($_POST['familia']);
-    $descripcion = ($_POST['descripcion']);
     $cod = $_POST['codigo'];
-
-    $sql ="UPDATE productos SET
-    nombre = :nombre,
-    nombre_corto = :nombreCorto,
-    descripcion = :descripcion,
-    pvp = :precio,
-    familia = :familia,
-    WHERE id = :codigo";
-
+    $nombre = $_POST['nombre'];
+    $nombreCorto = $_POST['nombreCorto'];
+    $precio = $_POST['precio'];
+    $familia = $_POST['familia'];
+    $descripcion = $_POST['descripcion'];
+//Generamos la sentencia del update.
+    $sql =("UPDATE productos SET nombre=:nombre,nombre_corto=:nombreCorto,descripcion=:descripcion,pvp=:precio,familia=:familia WHERE id=:i");
+//Preparamos el update pasándole la variable donde almacenamos la sentencia del update.
     $stmt3 = $conexionProyecto->prepare($sql);
     try {
-        $stmt3->execute([
-            ':nombre' => $nombre,
-            ':nombreCorto' => $nombreCorto,
-            ':descripcion' => $descripcion,
-            ':precio' => $precio,
-            ':familia' => $familia,
-            ':codigo'=> $cod
-        ]);
-
-
+//Ejecutamos el update pasándole los valores.
+        $stmt3->execute([':i'=>$cod,':nombre'=>$nombre,':nombreCorto'=>$nombreCorto,':descripcion'=>$descripcion,':precio'=>$precio,':familia'=>$familia]);
+//Almacenamos en la variable $producto el array del objeto.       
+        $producto2 = $stmt3->fetchALL(PDO::FETCH_OBJ);
     } catch (PDOException $ex) {
-        $resultado = false;
+        //$resultado = false;
         $error = $ex->getMessage();
     }
     if ($resultado) {
+        //Si resultado es true lanzamos una alerta conforme se ha actualizado el producto.
         echo "<div class='alert alert-success' role='alert' > Producto : $nombre  actualizado correctamente.</div>";
+        
     } else {
-        echo "<div class='content alert alert-danger' role='alert'> No se ha encontrado el producto. ERROR:$error </div>";
+        //Si es falso lanzamos una alerta conforme no se ha podido modificar
+        echo "<div class='content alert alert-danger' role='alert'> No se ha podido modificar el producto. ERROR:$error </div>";
     }
 }
-print_r($producto);print_r($p);
+
+//Si no mandamos el id nos lleva a listado.php
+if (!isset($_GET['id'])) {
+    header('Location:listado.php');
+    exit();
+} else {
+    $id = $_GET['id'];
+    //Creamos la sentencia para seleccionar el producto donde el id sea el que se pasa por get,
+    $consulta = "SELECT * FROM productos WHERE id=:i";
+    //Preparamos la consulta.
+    $stmt2 = $conexionProyecto->prepare($consulta);
+    //Creamos la sentencia para que nos aparezca la familia a la que corresponde el producto con el id pasado.
+    $familia = "SELECT cod,nombre FROM familias ORDER BY nombre";
+    //Preparamos la consulta.
+    $stmt = $conexionProyecto->prepare($familia);
+    try {
+        //Ejecutamos ambas consultas pasándole a la primera el id.
+        $stmt->execute();
+        $stmt2->execute([':i' => $id]);
+        $producto = $stmt2->fetchALL(PDO::FETCH_OBJ);
+        //$stmt2->execute();
+    } catch (PDOException $ex) {
+        //En caso de que haya algún error recogemos el erros y lanzamos una alerta.
+        $error = $ex->getMessage();
+        echo "<div class='content alert alert-danger' role='alert'> Error al recuperar el producto o la familia. ERROR:$error </div>";
+    }
+
+}
 
 ?>
 <!DOCTYPE html>
@@ -88,7 +90,7 @@ print_r($producto);print_r($p);
         </div>
 
         <div class="container mt-5">
-            <form method="POST" action="prueba.php">
+            <form method="POST" action="">
                 <!-- action="<?php //echo $_SERVER['PHP_SELF']; ?>"-->
                 <?php
                 //Recorremos el array 
@@ -102,20 +104,21 @@ print_r($producto);print_r($p);
                     </div>
                     <div class="col">
                         <label for="nombreCorto">Nombre Corto</label>
-                        <input value="<?php echo $dato->nombre_corto ?> " placeholder="Nombre corto" id="nombre_corto"
+                        <input value="<?php echo $dato->nombre_corto ?> " placeholder="Nombre corto" id="nombreCorto"
                             name="nombreCorto" type="text" class="form-control">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <label for="precio">Precio (€)</label>
-                        <input value="<?php echo $dato->pvp ?>" placeholder="Precio" id="precio" name="pvp" type="text"
+                        <input value="<?php echo $dato->pvp ?>" placeholder="Precio" id="precio" name="precio" type="text"
                             class="form-control">
                     </div>
                     <div class="col">
                         <label for="familia">Familia</label>
                         <select id="familia" name="familia" class="form-control">
                             <?php
+                            //Recorremos el array de familia para que se asocie la familia con el id que corresponde
                                 while ($filas = $stmt->fetch(PDO::FETCH_OBJ)) {
                                     if ($filas->cod == $dato->familia) {
                                         echo "<option value='{$filas->cod}' selected>$filas->nombre</option>";
@@ -129,21 +132,23 @@ print_r($producto);print_r($p);
                     </div>
                     <div class="form-group">
                         <label for="descripcion">Descripción</label>
-                        <textarea placeholder="<?php echo $dato->descripcion ?>" class="form-control" name="descripcion"
-                            id="descripcion" rows="12"></textarea>
+                        <textarea placeholder="descr" class="form-control" name="descripcion"
+                            id="descripcion" rows="12"><?php echo $dato->descripcion ?></textarea>
                     </div>
-                    <div style="margin-top: 1em">
-
+                   
+                </div>
+                <?php
+                }
+                ?>
+                    
+                <div style="margin-top: 1em">
+                        <!--Introducimos el id como campo oculto para enviarlo pos post y que no se pueda modificar-->
                         <input type="hidden" name="codigo" value="<?php echo $dato->id ?>">
                         <button type="submit" name="modificar" class="btn btn-primary">Modificar</button>
 
                         <button type="button" class="btn btn-info"><a href="listado.php">Volver</a></button>
 
                     </div>
-                </div>
-                <?php
-                }
-                ?>
             </form>
         </div>
 
