@@ -1,14 +1,18 @@
 <?php
 // Iniciamos la sesión.
 session_start();
-echo "identificador sesion ".session_id();
-echo "nombre sesion ".session_name();
+$idioma = ["Español", "Inglés"];
+$perfil = ["Si", "No"];
+$zona = ["GTM-2", "GTM-1", "GTM", "GTM+1", "GTM+2"];
 //Comprobamos si se han enviado datos.
-if(isset($_POST['establecer'])){
+if (isset($_POST['establecer'])) {
     //Cargamos los datos en la sesión.
-    $_SESSION['']['idioma']=$_POST['idioma'];
-    $_SESSION['']['perfil']=$_POST['perfil'];
-    $_SESSION['']['zonah']=$_POST['zonah'];
+    $_SESSION['idioma'] = $_POST['idioma'];
+    $_SESSION['perfil'] = $_POST['perfil'];
+    $_SESSION['zona'] = $_POST['zona'];
+}
+if(isset($_SESSION['idioma'])&& isset($_SESSION['perfil']) &&isset($_SESSION['zona'])){
+    echo "<div class='alert alert-success' role='alert' > Preferencia de usuario guardadas</div>";
 }
 ?>
 <!DOCTYPE html>
@@ -19,17 +23,15 @@ if(isset($_POST['establecer'])){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap CSS v5.0.2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- css Fontawesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-        integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-        <link rel="stylesheet" href="estilos.css">
-        <title>Tarea04</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="estilos.css">
+    <title>Tarea04</title>
 </head>
 
 <body>
-    <div class="container mt-5">
+    <div class="container mt-3">
         <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
             <div class="m-auto">
                 <h3 class="text-center">Preferencias Usuario</h3>
@@ -39,19 +41,39 @@ if(isset($_POST['establecer'])){
                     <label for="idioma" class="form-label">Idioma</label>
                     <div class="col-sm-10">
                         <select id="idioma" name="idioma" class="form-control">
-                            <option selected value="esp">Español</option>
-                            <option value="ing">Inglés</option>
+                            <?php
+
+                            foreach ($idioma as $i => $value) {
+                                if (isset($_SESSION['idioma']) && $_SESSION['idioma'] == $i) {
+
+                                    echo "<option value='$i' selected > $value  </option>";
+                                } else {
+
+                                    echo " <option value='$i'> $value</option>";
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
+
                 </div>
             </div>
             <div class="row mb-3 ">
                 <div class="col-md-3  m-auto">
                     <label for="perfil" class="form-label">Perfil público</label>
                     <div class="col-sm-10">
-                        <select id="prefil" name="perfil" class="form-control">
-                            <option selected value="si">Si</option>
-                            <option value="no">No</option>
+                        <select id="perfil" name="perfil" class="form-control">
+                            <<?php
+                                foreach ($perfil as $i => $value) {
+                                    if (isset($_SESSION['perfil']) && $_SESSION['perfil'] == $i) {
+
+                                        echo "<option value='$i' selected > $value  </option>";
+                                    } else {
+    
+                                        echo " <option value='$i'> $value</option>";
+                                    }
+                                }
+                                ?>
                         </select>
                     </div>
                 </div>
@@ -60,19 +82,26 @@ if(isset($_POST['establecer'])){
                 <div class="col-md-3 m-auto">
                     <label for="zonah" class="form-label">Zona horaria</label>
                     <div class="col-sm-10">
-                        <select id="zonahor" name="zonah" class="form-control">
-                            <option selected value="-2">GTM-2</option>
-                            <option value="-1">GTM-1</option>
-                            <option selected value="GMT">GTM</option>
-                            <option value="+1">GTM+1</option>
-                            <option selected value="+2">GTM+2</option>
+                        <select id="zona" name="zona" class="form-control">
+                            <?php
+                            foreach ($zona as $i => $value) {
+                                if (isset($_SESSION['zona']) && $_SESSION['zona'] == $i) {
+
+                                    echo "<option value='$i' selected > $value  </option>";
+                                } else {
+
+                                    echo " <option value='$i'> $value</option>";
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 m-auto">
                 <button type="submit" name="establecer" class="btn btn-primary">Establecer preferencias</button>
-                <button type="button" name="mostrar" class="btn btn-success"><a href="mostrar.php">Mostrar preferencias</a></button>
+                <button type="button" name="mostrar" class="btn btn-success"><a href="mostrar.php">Mostrar
+                        preferencias</a></button>
             </div>
     </div>
 
@@ -81,11 +110,9 @@ if(isset($_POST['establecer'])){
     </form>
 
     <!-- Bootstrap JavaScript Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
     </script>
 </body>
 
