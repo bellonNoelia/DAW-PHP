@@ -48,7 +48,7 @@ if(isset($_SESSION['idioma'])&& isset($_SESSION['perfil']) &&isset($_SESSION['zo
                         <div class="col-sm-12">
                             <div class="input-group margin-bottom-s">
                                 <i class="fa fa-language fa-lg fa-border" style="background-color:  #dce2e4 ;"></i>
-                                <select id="idioma" name="idioma" class="form-control">
+                                <select id="idioma" name="idioma" class="form-select">
                                     <?php
 
                             foreach ($idioma as $i => $value) {
@@ -75,7 +75,7 @@ if(isset($_SESSION['idioma'])&& isset($_SESSION['perfil']) &&isset($_SESSION['zo
                             <div class="input-group margin-bottom-s">
                                 <i class="fa fa-users fa-lg  fa-align-center fa-border"
                                     style="background-color:#dce2e4 ;"></i>
-                                <select id="perfil" name="perfil" class="form-control">
+                                <select id="perfil" name="perfil"  class="form-select">
                                     <<?php
                                 foreach ($perfil as $i => $value) {
                                     if (isset($_SESSION['perfil']) && $_SESSION['perfil'] == $i) {
@@ -99,7 +99,7 @@ if(isset($_SESSION['idioma'])&& isset($_SESSION['perfil']) &&isset($_SESSION['zo
                             <div class="input-group margin-bottom-s">
                                 <i class="fa fa-clock fa-lg fa-border" aria-hidden="true"
                                     style="background-color:#dce2e4;"></i>
-                                <select id="zona" name="zona" class="form-control">
+                                <select id="zona" name="zona"  class="form-select">
                                     <?php
                             foreach ($zona as $i => $value) {
                                 if (isset($_SESSION['zona']) && $_SESSION['zona'] == $i) {
