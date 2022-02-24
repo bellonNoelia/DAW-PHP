@@ -1,23 +1,39 @@
 <?php
 // Iniciamos la sesión.
 session_start();
-//if(isset($_POST['mostrar'])){
-    if(isset($_SESSION['idioma']) && isset($_SESSION['perfil']) && isset($_SESSION['zona'])){
-        $idioma=$_SESSION['idioma'];
-        $perfil=$_SESSION['perfil'];
-        $zona=$_SESSION['zona'];
-    }
-//}
+//Para que al borrar, se recargue y nos borre el texto lo colocamos antes del if isset($_SESSION)
 if(isset($_POST['borrar'])){
+    //Comprobamos si tenemos preferncias establecidas.
     if(!isset($_SESSION['idioma']) && !isset($_SESSION['perfil']) && !isset($_SESSION['zona'])){
     echo "<div class='content alert alert-danger' role='alert'> Debe fijar primero las preferencia. </div>";
     }else{
-        session_destroy();
+        //Borramos las preferencias.
+        session_unset();
         echo "<div class='content alert alert-danger' role='alert'>Preferencias borradas.</div>";
     }
-    
-
 }
+$idi= ["Español", "Inglés"];
+$per = ["Si", "No"];
+$zon= ["GTM-2", "GTM-1", "GTM", "GTM+1", "GTM+2"];
+ //Comprobamos que existen preferencias y las asociamos con las variables para imprimirlas en la página.
+if(isset($_SESSION['idioma']) && isset($_SESSION['perfil']) && isset($_SESSION['zona'])){
+    foreach ($idi as $i => $value) {
+        if ($_SESSION['idioma'] == $i) {
+            $idioma=$value;
+        }
+    }
+    foreach ($per as $i => $value) {
+        if ($_SESSION['perfil']== $i) {
+            $perfil=$value;
+        }
+    }
+    foreach ($zon as $i => $value) {
+        if ($_SESSION['zona'] == $i) {
+            $zona=$value;
+        }
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
