@@ -8,6 +8,16 @@ session_start();
         $zona=$_SESSION['zona'];
     }
 //}
+if(isset($_POST['borrar'])){
+    if(!isset($_SESSION['idioma']) && !isset($_SESSION['perfil']) && !isset($_SESSION['zona'])){
+    echo "<div class='content alert alert-danger' role='alert'> Debe fijar primero las preferencia. </div>";
+    }else{
+        session_destroy();
+        echo "<div class='content alert alert-danger' role='alert'>Preferencias borradas.</div>";
+    }
+    
+
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -45,9 +55,9 @@ session_start();
 
                 </div>
                 <div class="col-md-11 ">
-                    <button type="button" name="mostrar" class="btn btn-primary"><a
+                    <button type="button" name="establecer" class="btn btn-primary"><a
                             href="preferencias.php">Establecer</a></button>
-                    <button type="submit" name="establecer" class="btn btn-danger"
+                    <button type="submit" name="borrar" class="btn btn-danger"
                         style="margin-left: 0.5em;">Borrar</button>
 
                 </div>
