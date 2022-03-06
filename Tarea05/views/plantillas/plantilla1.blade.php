@@ -17,8 +17,7 @@
 
 <body>
 
-    <div class="container mt-3">
-        <h3 class="text-center mt-3 mb-3">@yield('encabezado')</h3>
+    <div class="container-fluid" style="width:100%; height:100vh;background-color: #fb9971  ;">
         @yield('contenido')
     </div>
 
