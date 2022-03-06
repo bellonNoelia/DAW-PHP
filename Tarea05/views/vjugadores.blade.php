@@ -6,13 +6,13 @@
 {{$encabezado}}
 @endsection
 @section('contenido')
-<div class="container-fluid" style="width:100%; height:100%; background-color:#f5af70;">
-    <div>
+<div class="container-fluid">
+    <div style="padding-top: 1em">
         <h3 class="text-center">Listado de Jugadores</h3>
     </div>
 
     <div class="container mt-5">
-        <button type="submit" class="btn btn-success"><a href="crearJugador.php">+ Nuevo jugador</a></button>
+        <button type="submit" class="btn btn-success" style="margin-bottom: 1em;background-color:   #3db215  ; border-color:  #3db215 ;"><a href="crearJugador.php" style="color: #ffffff;appearance: button;text-decoration: none;"><i class="fa fa-plus" ></i> Nuevo jugador</a></button>
 
         <table class="table table-dark table-striped">
             <thead>
