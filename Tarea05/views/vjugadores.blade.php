@@ -12,7 +12,7 @@
     </div>
 
     <div class="container mt-5">
-        <button type="submit" class="btn btn-success" style="margin-bottom: 1em;background-color:   #3db215  ; border-color:  #3db215 ;"><a href="crearJugador.php" style="color: #ffffff;appearance: button;text-decoration: none;"><i class="fa fa-plus" ></i> Nuevo jugador</a></button>
+        <button type="submit" class="btn btn-success" style="margin-bottom: 1em;background-color:   #3db215  ; border-color:  #3db215 ;"><a href="fcrearJugador.php" style="color: #ffffff;appearance: button;text-decoration: none;"><i class="fa fa-plus" ></i> Nuevo jugador</a></button>
 
         <table class="table table-dark table-striped">
             <thead>
